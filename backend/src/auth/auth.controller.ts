@@ -1,0 +1,47 @@
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { LocalGuard } from './guards/local.guard';
+import { JwtGuard } from './guards/jwt.guard';
+import { GoogleGuard } from './guards/google.guard';
+import { ConfigService } from '@nestjs/config';
+
+@Controller('auth')
+export class AuthController {
+  constructor(
+    private authService: AuthService,
+    private config: ConfigService,
+  ) {}
+
+  @Post('register')
+  register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
+  }
+
+  // LocalGuard เรียก LocalStrategy ตรวจ email/password ก่อน
+  @UseGuards(LocalGuard)
+  @Post('login')
+  login(@Req() req: any) {
+    return this.authService.login(req.user);
+  }
+
+  // ส่งไป Google (redirect)
+  @UseGuards(GoogleGuard)
+  @Get('google')
+  googleLogin() {}
+
+  // Google redirect กลับมาที่นี่
+  @UseGuards(GoogleGuard)
+  @Get('google/callback')
+  async googleCallback(@Req() req: any, @Res() res: any) {
+    const result = await this.authService.login(req.user);
+    const frontendUrl = this.config.get('FRONTEND_URL');
+    res.redirect(`${frontendUrl}/auth/callback?token=${result.access_token}`);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('me')
+  getMe(@Req() req: any) {
+    return req.user;
+  }
+}

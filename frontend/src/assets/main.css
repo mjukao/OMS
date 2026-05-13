@@ -1,0 +1,605 @@
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   NAVBAR — App.vue
+   ============================================================ */
+.navbar {
+  background: #200a42;
+  height: 75px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo {
+  color: #fff;
+  font-weight: 200;
+  font-size: 35px;
+  margin-right: 32px;
+  letter-spacing: 1px;
+}
+
+.navbar-left a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.navbar-left a:hover {
+  color: #fff;
+  background: rgba(231, 226, 226, 0.07);
+}
+
+.navbar-left a.router-link-active {
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.username {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.btn-logout {
+  background: transparent;
+  border: 2px solid #d60d0d;
+  color: #d1d1d1;
+  padding: 5px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+
+.btn-logout:hover {
+  border-color: #089624;
+  color: #fff;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+/* Base — ใช้คู่กับ btn-primary หรือ btn-google ใน LoginView */
+.btn {
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, opacity 0.2s;
+}
+.btn:hover { opacity: 0.85; }
+
+/* Primary (สีเขียว) — LoginView */
+.btn-primary {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-primary:disabled { opacity: 0.5; cursor: default; }
+
+/* Google login — LoginView */
+.btn-google {
+  background-color: #fff;
+  color: #444;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Form action buttons — ใช้ในทุก form/modal */
+.btn-add {
+  background: #1a1a2e;
+  color: #fff;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-left: 8px;
+}
+.btn-add:hover { background: #2d2d44; }
+
+.btn-save {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.btn-save:hover { background: #15803d; }
+
+.btn-cancel {
+  background: #f3f4f6;
+  color: #444;
+  border: 1px solid #ddd;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-left: 8px;
+}
+.btn-cancel:hover { background: #e5e7eb; }
+
+/* Table row action buttons (สีดำ) — ShopView, ProductsView */
+.btn-view,
+.btn-edit,
+.btn-del {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.btn-view,
+.btn-edit { margin-right: 4px; }
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: #d62323;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-clear {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+.btn-clear:hover { color: #374151; }
+
+/* Small colored action buttons — ProfileView, OrderView */
+.action-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 13px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-sm-edit         { background: #eff6ff; color: #6c44f4; }
+.btn-sm-edit:hover   { background: #dbeafe; }
+.btn-sm-delete       { background: #fef2f2; color: #ef4444; }
+.btn-sm-delete:hover { background: #fee2e2; }
+.btn-sm-view         { background: #f0fdf4; color: #22c55e; }
+.btn-sm-view:hover   { background: #dcfce7; }
+
+/* ============================================================
+   LAYOUT — ทุกหน้า
+   ============================================================ */
+.page {
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-header h1 { font-size: 20px; font-weight: 600; }
+.section-header h2 { font-size: 16px; font-weight: 600; }
+
+.shop-name { color: #4f46e5; }
+
+.product-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid #e5e7eb;
+}
+
+/* ============================================================
+   SEARCH — ShopView, ProductsView
+   ============================================================ */
+.search-box {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 9px 36px 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  background: #fff;
+  color: #374151;
+}
+.search-input:focus { border-color: #6366f1; }
+
+/* ============================================================
+   TABLE — ทุกหน้า
+   ============================================================ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.data-table th {
+  background: #f9fafb;
+  padding: 10px 14px;
+  text-align: left;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td    { background: #f9fafb; }
+.row-active td             { background: #eff6ff !important; }
+
+/* ============================================================
+   FORM — ทุกหน้า
+   ============================================================ */
+.form-box {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.form-box h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #374151;
+}
+
+.form-group { margin-bottom: 12px; }
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+  color: #374151;
+}
+
+.form-group input:focus,
+.form-group textarea:focus { border-color: #6366f1; }
+
+.form-group select {
+  width: 49%;
+  padding: 7px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+  color: #5c5c5c;
+  background: #fff;
+  cursor: pointer;
+  appearance: auto;
+}
+.form-group select:focus { border-color: #1b1eda; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+/* ============================================================
+   MODAL — OrderView, ProfileView
+   ============================================================ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal label {
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.modal select,
+.modal input,
+.modal textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  box-sizing: border-box;
+  display: block;
+}
+
+.add-item-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.add-item-row select { flex: 1; min-width: 0; }
+.add-item-row input  { width: 72px; flex-shrink: 0; }
+
+.modal-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.badge-pending   { background: #fef9c3; color: #854d0e; }  /* เหลือง */
+.badge-confirmed { background: #dbeafe; color: #1d4ed8; }  /* ฟ้า */
+.badge-shipped   { background: #ede9fe; color: #6d28d9; }  /* ม่วง */
+.badge-delivered { background: #dcfce7; color: #16a34a; }  /* เขียว */
+.badge-cancelled { background: #fee2e2; color: #dc2626; }  /* แดง */
+/* ============================================================
+   ADDRESS CARDS — ProfileView, OrderView
+   ============================================================ */
+.addr-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+
+.addr-default {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.addr-select-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  background: #fff;
+  transition: border-color 0.15s;
+}
+.addr-select-card:hover { border-color: #16a34a; }
+
+.addr-selected {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+/* ============================================================
+   LOGIN — LoginView
+   ============================================================ */
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f2f5;
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.login-card h1 {
+  font-size: 22px;
+  color: #1e1e2e;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.login-divider {
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
+  margin: 16px 0;
+  position: relative;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #eee;
+}
+
+.login-divider::before { left: 0; }
+.login-divider::after  { right: 0; }
+
+.login-switch {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #888;
+}
+
+.login-switch button {
+  background: none;
+  border: none;
+  color: #5b2be1;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ============================================================
+   UTILITIES — badges, alerts, stock, text helpers
+   ============================================================ */
+.badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-green { background: #dcfce7; color: #16a34a; }
+.badge-red   { background: #fee2e2; color: #dc2626; }
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.alert-error   { background: #fee2e2; color: #dc2626; }
+.alert-success { background: #dcfce7; color: #16a34a; }
+
+.stock-ok  { color: #16a34a; font-weight: 500; }
+.stock-out { color: #dc2626; font-weight: 500; }
+
+.txt-error { color: #dc2626; font-size: 13px; padding: 8px 0; }
+.txt-gray  { color: #9ca3af; font-size: 13px; padding: 16px 0; }
+
+.loading,
+.empty {
+  text-align: center;
+  padding: 48px;
+  color: #aaa;
+  font-size: 15px;
+}
+
+/* ============================================================
+   ORDER EXTRAS — OrderView
+   ============================================================ */
+.filter-bar { margin-bottom: 16px; }
+
+.filter-bar select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  color: #374151;
+  background: #fff;
+  cursor: pointer;
+}
+.filter-bar select:focus { border-color: #6366f1; }
+
+.item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+.item-meta {
+  color: #9ca3af;
+  font-size: 12px;
+  margin-left: 4px;
+}
