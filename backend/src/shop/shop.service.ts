@@ -1,5 +1,4 @@
-// src/shops/shop.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Shop, ShopDocument } from './schema/shop.schema';
@@ -14,84 +13,87 @@ export class ShopService {
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
   ) {}
 
-  // เพิ่มร้านค้าใหม่
-  async create(createShopDto: CreateShopDto): Promise<Shop> {
-    const createdShop = new this.shopModel(createShopDto);
-    return createdShop.save();
+  // สร้างร้านค้า — กำหนด owner จาก userId ที่ล็อกอิน
+  async create(dto: CreateShopDto, ownerId: string): Promise<Shop> {
+    const shop = new this.shopModel({ ...dto, owner: new Types.ObjectId(ownerId) });
+    return shop.save();
   }
 
-async findAll(search?: string) {
-  const query = search
-    ? {
-        $or: [//$or หมายถึง:ตรงอันใดอันหนึ่งก็ได้
-          { name: { $regex: search, $options: 'i' } },
-          { description: { $regex: search, $options: 'i' } },
-        ],
-      }
-    : {}//query ว่าง = ดึงทั้งหมด
-//find(query) = ค้นหาใน MongoDB
-//exec() = สั่ง query ทำงาน
-  return this.shopModel.find(query).exec()
-}
+  // ดึงเฉพาะร้านของ owner นั้น
+  async findAll(ownerId: string, search?: string) {
+    const query: any = { owner: new Types.ObjectId(ownerId) };
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+      ];
+    }
+    return this.shopModel.find(query).exec();
+  }
 
-  // ดึงข้อมูลร้านค้าตาม ID
+  // ดูร้านค้าชิ้นเดียว
   async findOne(id: string): Promise<Shop> {
-    return this.shopModel.findById(id).exec();
+    const shop = await this.shopModel.findById(id).exec();
+    if (!shop) throw new NotFoundException('ไม่พบร้านค้า');
+    return shop;
   }
 
-  // แก้ไขข้อมูลร้านค้า
-  async update(id: string, updateShopDto: UpdateShopDto): Promise<Shop> {
-    return this.shopModel.findByIdAndUpdate(id, updateShopDto, { new: true }).exec();
+  // แก้ไข — ตรวจ owner
+  async update(id: string, dto: UpdateShopDto, ownerId: string): Promise<Shop> {
+    const shop = await this.shopModel.findOneAndUpdate(
+      { _id: id, owner: new Types.ObjectId(ownerId) },
+      dto,
+      { new: true },
+    ).exec();
+    if (!shop) throw new NotFoundException('ไม่พบร้านค้า หรือไม่มีสิทธิ์แก้ไข');
+    return shop;
   }
 
-  // ลบร้านค้า
-  async delete(id: string): Promise<any> {
-    return this.shopModel.findByIdAndDelete(id).exec();
+  // ลบ — ตรวจ owner
+  async delete(id: string, ownerId: string) {
+    const shop = await this.shopModel.findOneAndDelete({
+      _id: id,
+      owner: new Types.ObjectId(ownerId),
+    }).exec();
+    if (!shop) throw new NotFoundException('ไม่พบร้านค้า หรือไม่มีสิทธิ์ลบ');
+    return { message: 'ลบร้านค้าสำเร็จ' };
   }
 
- // ── Customer List ──────────────────────────────────────
+  // ลูกค้าของร้าน — ดึงจาก shippingAddress แทน user account
   async getCustomers(shopId: string) {
     const shop = await this.shopModel.findById(shopId).select('name');
     const orders = await this.orderModel
       .find({ shop: new Types.ObjectId(shopId) })
-      .populate('user', 'name email firstName lastName phone')
       .sort({ createdAt: -1 });
 
     const map = new Map<string, any>();
 
     for (const order of orders) {
-      const user = order.user as any;
-      const uid = user._id.toString();
+      const addr = order.shippingAddress || '';
+      const parts = addr.split(' | ');
+      const name = parts[0] ? parts[0].replace('ผู้รับ: ', '') : 'ไม่ระบุ';
+      const phone = parts[1] ? parts[1].replace('โทร: ', '') : '';
+      const address = parts[2] ? parts[2].replace('ที่อยู่: ', '') : '';
 
-      if (!map.has(uid)) {
-        map.set(uid, {
-          user: {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-          },
+      const key = `${name}|${phone}`;
+
+      if (!map.has(key)) {
+        map.set(key, {
+          receiver: { name, phone, address },
           orderCount: 0,
           totalSpent: 0,
           orders: [],
         });
       }
 
-      const entry = map.get(uid);
+      const entry = map.get(key);
       entry.orderCount += 1;
       entry.totalSpent += order.totalAmount;
       entry.orders.push({
         _id: order._id,
-        shopName: shop.name,
+        shopName: shop?.name,
         status: order.status,
         totalAmount: order.totalAmount,
-        items: order.items.map((i) => ({
-          productName: i.productName,
-          quantity: i.quantity,
-          unitPrice: i.unitPrice,
-        })),
         createdAt: order.createdAt,
       });
     }

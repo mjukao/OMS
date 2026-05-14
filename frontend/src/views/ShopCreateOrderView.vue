@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
+import api from '../api/base'
 import { useOrderStore } from '../stores/order.store'
 
 const route = useRoute()
@@ -18,19 +18,22 @@ const recipient = ref({ name: '', phone: '', address: '' })
 const phoneError = ref('')
 
 // Step 2
-const orderItems = ref<{ productId: string; name: string; price: number; quantity: number }[]>([])
+const orderItems = ref<any[]>([])
 
 // Step 3
 const paymentMethod = ref<'transfer' | 'cod'>('cod')
 const submitting = ref(false)
+const pageError = ref('')
 
 onMounted(async () => {
-  const [shopRes, productsRes] = await Promise.all([
-    axios.get(`http://localhost:3000/api/shops/${shopId}`),
-    axios.get(`http://localhost:3000/api/products/shop/${shopId}`),
-  ])
-  shop.value = shopRes.data
-  products.value = productsRes.data
+  try {
+    const shopRes = await api.get(`/shops/${shopId}`)
+    shop.value = shopRes.data
+    const productsRes = await api.get(`/products/shop/${shopId}`)
+    products.value = productsRes.data
+  } catch (e: any) {
+    pageError.value = e.response?.data?.message || 'โหลดข้อมูลไม่ได้'
+  }
 })
 
 function validatePhone(phone: string) {
@@ -107,23 +110,24 @@ async function submitOrder() {
 
 <template>
   <div class="page">
+    <p v-if="pageError" class="txt-error">{{ pageError }}</p>
 
     <!-- Header -->
     <div class="section-header" style="margin-bottom:24px">
-      <div class="shop-products-header">
+      <div class="back-header">
         <button class="btn-back" @click="step > 1 ? step-- : router.push(`/shops/${shopId}/orders`)">← กลับ</button>
         <div>
-          <h1 class="shops-title">สร้างคำสั่งซื้อ</h1>
-          <p class="shop-products-desc">{{ shop?.name }}</p>
+          <h1 class="page-title">สร้างคำสั่งซื้อ</h1>
+          <p class="page-sub">{{ shop?.name }}</p>
         </div>
       </div>
       <!-- Step indicator -->
-      <div class="steps-indicator">
-        <div :class="['step-dot', step >= 1 ? 'step-dot--active' : '']">1</div>
+      <div class="steps">
+        <div :class="['step', step >= 1 ? 'step-on' : '']">1</div>
         <div class="step-line"></div>
-        <div :class="['step-dot', step >= 2 ? 'step-dot--active' : '']">2</div>
+        <div :class="['step', step >= 2 ? 'step-on' : '']">2</div>
         <div class="step-line"></div>
-        <div :class="['step-dot', step >= 3 ? 'step-dot--active' : '']">3</div>
+        <div :class="['step', step >= 3 ? 'step-on' : '']">3</div>
       </div>
     </div>
 
@@ -131,9 +135,9 @@ async function submitOrder() {
     <div v-if="step === 1">
       <div class="form-box">
         <h3>ข้อมูลผู้ส่ง</h3>
-        <div class="sender-info">
-          <div class="sender-row"><span class="sender-label">ร้าน</span><span>{{ shop?.name }}</span></div>
-          <div class="sender-row"><span class="sender-label">ที่อยู่</span><span>{{ shop?.address || '-' }}</span></div>
+        <div class="sender-box">
+          <div class="srow"><span class="slabel">ร้าน</span><span>{{ shop?.name }}</span></div>
+          <div class="srow"><span class="slabel">ที่อยู่</span><span>{{ shop?.address || '-' }}</span></div>
         </div>
       </div>
 
@@ -167,16 +171,15 @@ async function submitOrder() {
       <div class="form-box">
         <h3>เลือกสินค้า</h3>
         <p v-if="products.length === 0" class="txt-gray">ไม่มีสินค้าในร้านนี้</p>
-        <div class="product-select-grid">
+        <div class="product-grid">
           <div v-for="product in products" :key="product._id"
-            :class="['product-select-card', isSelected(product._id) ? 'product-select-card--selected' : '']"
-            @click="toggleProduct(product)">
-            <div class="product-select-name">{{ product.name }}</div>
-            <div class="product-select-price">฿{{ product.price.toLocaleString() }}</div>
-            <div class="product-select-stock" :class="product.stock > 0 ? 'stock-ok' : 'stock-out'">
+            :class="['product-card', isSelected(product._id) ? 'product-card-on' : '']" @click="toggleProduct(product)">
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-price">฿{{ product.price.toLocaleString() }}</div>
+            <div class="product-stock" :class="product.stock > 0 ? 'stock-ok' : 'stock-out'">
               สต็อก {{ product.stock }} ชิ้น
             </div>
-            <div v-if="isSelected(product._id)" class="product-select-check">✓</div>
+            <div v-if="isSelected(product._id)" class="product-check">✓</div>
           </div>
         </div>
       </div>
@@ -199,7 +202,7 @@ async function submitOrder() {
               <td>{{ item.name }}</td>
               <td>฿{{ item.price.toLocaleString() }}</td>
               <td>
-                <div class="qty-control">
+                <div class="qty-box">
                   <button @click="changeQty(item.productId, -1)">−</button>
                   <span>{{ item.quantity }}</span>
                   <button @click="changeQty(item.productId, 1)">+</button>
@@ -213,7 +216,7 @@ async function submitOrder() {
             </tr>
           </tbody>
         </table>
-        <div class="order-total">ยอดรวม: <strong>฿{{ totalAmount.toLocaleString() }}</strong></div>
+        <div class="order-sum">ยอดรวม: <strong>฿{{ totalAmount.toLocaleString() }}</strong></div>
       </div>
 
       <div style="display:flex;justify-content:flex-end">
@@ -227,16 +230,15 @@ async function submitOrder() {
     <div v-if="step === 3">
       <div class="form-box">
         <h3>วิธีชำระเงิน</h3>
-        <div class="payment-options">
-          <label :class="['payment-option', paymentMethod === 'transfer' ? 'payment-option--selected' : '']">
+        <div class="pay-list">
+          <label :class="['pay-item', paymentMethod === 'transfer' ? 'pay-item-on' : '']">
             <input type="radio" v-model="paymentMethod" value="transfer" style="display:none" />
-            <div class="payment-icon"></div>
-            <div class="payment-label">โอนเงิน</div>
+            <div class="pay-label">โอนเงิน</div>
           </label>
-          <label :class="['payment-option', paymentMethod === 'cod' ? 'payment-option--selected' : '']">
+          <label :class="['pay-item', paymentMethod === 'cod' ? 'pay-item-on' : '']">
             <input type="radio" v-model="paymentMethod" value="cod" style="display:none" />
-            <div class="payment-icon"></div>
-            <div class="payment-label">เก็บเงินปลายทาง</div>
+            <div class="pay-icon"></div>
+            <div class="pay-label">เก็บเงินปลายทาง</div>
           </label>
         </div>
       </div>
@@ -244,20 +246,20 @@ async function submitOrder() {
       <!-- สรุปคำสั่งซื้อ -->
       <div class="form-box">
         <h3> สรุปคำสั่งซื้อ</h3>
-        <div class="summary-section">
-          <div class="summary-label">ผู้รับ</div>
+        <div class="summary">
+          <div class="sum-label">ผู้รับ</div>
           <div>{{ recipient.name }} | {{ recipient.phone }}</div>
           <div style="color:#6b7280;font-size:12px">{{ recipient.address }}</div>
         </div>
-        <div class="summary-section" style="margin-top:12px">
-          <div class="summary-label">รายการสินค้า</div>
-          <div v-for="item in orderItems" :key="item.productId" class="summary-item">
+        <div class="summary" style="margin-top:12px">
+          <div class="sum-label">รายการสินค้า</div>
+          <div v-for="item in orderItems" :key="item.productId" class="sum-item">
             <span>{{ item.name }} ×{{ item.quantity }}</span>
             <span>฿{{ (item.price * item.quantity).toLocaleString() }}</span>
           </div>
         </div>
-        <div class="summary-total">
-          ยอดรวมทั้งหมด <strong>฿{{ totalAmount.toLocaleString() }}</strong>
+        <div class="sum-total">
+          <span>ยอดรวมทั้งหมด</span><strong>฿{{ totalAmount.toLocaleString() }}</strong>
         </div>
         <div style="margin-top:8px;font-size:13px;color:#6b7280">
           ชำระเงิน: {{ paymentMethod === 'transfer' ? 'โอนเงิน' : 'เก็บเงินปลายทาง' }}

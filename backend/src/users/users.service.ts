@@ -31,6 +31,15 @@ export class UsersService {
   async findById(id: string): Promise<UserDocument | null> {
     return this.userModel.findById(id).exec();
   }
+
+  // ผูก googleId กับ account เดิม (กรณีสมัครด้วย email มาก่อน)
+  async updateGoogleId(userId: string, googleId: string, avatar?: string): Promise<UserDocument> {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { googleId, ...(avatar && { avatar }) },
+      { new: true },
+    ).exec();
+  }
   // ── Profile ───────────────────────────────────────────
   async getProfile(userId: string): Promise<UserDocument> {
     const user = await this.userModel

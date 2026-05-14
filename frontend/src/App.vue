@@ -16,9 +16,9 @@ function logout() {
     <nav v-if="authStore.isLoggedIn" class="navbar">
       <div class="navbar-left">
         <span class="logo">📦 OMS</span>
-        <RouterLink to="/products">สินค้า</RouterLink>
+        <!-- <RouterLink to="/products">สินค้า</RouterLink> -->
         <RouterLink to="/shops">ร้านค้า</RouterLink>
-        <RouterLink to="/orders">คำสั่งซื้อ</RouterLink>
+        <!--RouterLink to="/orders">คำสั่งซื้อ</RouterLink-->
         <RouterLink to="/customers">ลูกค้า</RouterLink>
         <RouterLink to="/profile">โปรไฟล์</RouterLink>
 

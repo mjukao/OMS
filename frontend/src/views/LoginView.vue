@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.store'
 
@@ -11,9 +11,15 @@ const name = ref('')
 const email = ref('')
 const password = ref('')
 const error = ref('')
+
+// โหลดเมลที่ใช้ล่าสุดจาก localStorage
+onMounted(() => {
+  const saved = localStorage.getItem('lastEmail')
+  if (saved) email.value = saved
+})
+
 async function handleSubmit() {
   error.value = ''
-
   const fullEmail = `${email.value}@gmail.com`
 
   try {
@@ -22,7 +28,8 @@ async function handleSubmit() {
     } else {
       await authStore.login(fullEmail, password.value)
     }
-
+    // จำเมลไว้สำหรับครั้งหน้า
+    localStorage.setItem('lastEmail', email.value)
     router.push('/shops')
   } catch (e: any) {
     error.value = e.response?.data?.message || 'เกิดข้อผิดพลาด'
@@ -31,6 +38,12 @@ async function handleSubmit() {
 
 function loginGoogle() {
   window.location.href = 'http://localhost:3000/api/auth/google'
+}
+
+// ล้างเมลที่จำไว้ เผื่ออยากเปลี่ยน
+function clearSavedEmail() {
+  email.value = ''
+  localStorage.removeItem('lastEmail')
 }
 </script>
 
@@ -52,6 +65,14 @@ function loginGoogle() {
           <div class="input-group">
             <input v-model="email" type="text" placeholder="username" autocomplete="email" required />
             <span class="input-suffix">@gmail.com</span>
+          </div>
+          <!-- แสดงปุ่มเปลี่ยนเมล ถ้ามีเมลที่จำไว้ -->
+          <div v-if="email && !isRegister" style="margin-top:4px;font-size:11px;color:#888">
+            ไม่ใช่บัญชีนี้?
+            <button type="button" @click="clearSavedEmail"
+              style="background:none;border:none;color:#2563eb;cursor:pointer;font-size:11px;padding:0">
+              เปลี่ยนบัญชี
+            </button>
           </div>
         </div>
 

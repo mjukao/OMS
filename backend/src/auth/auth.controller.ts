@@ -18,7 +18,6 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
-  // LocalGuard เรียก LocalStrategy ตรวจ email/password ก่อน
   @UseGuards(LocalGuard)
   @Post('login')
   login(@Req() req: any) {
@@ -35,13 +34,14 @@ export class AuthController {
   @Get('google')
   googleLogin() {}
 
-  // Google redirect กลับมาที่นี่
   @UseGuards(GoogleGuard)
   @Get('google/callback')
   async googleCallback(@Req() req: any, @Res() res: any) {
     const result = await this.authService.login(req.user);
     const frontendUrl = this.config.get('FRONTEND_URL');
-    res.redirect(`${frontendUrl}/auth/callback?token=${result.access_token}`);
+    res.redirect(
+      `${frontendUrl}/auth/callback?token=${result.access_token}&refresh=${result.refresh_token}`,
+    );
   }
 
   @UseGuards(JwtGuard)

@@ -30,7 +30,8 @@ function openCreateShop() {
   showShopModal.value = true
 }
 
-function openEditShop(shop: any) {
+function openEditShop(shop: any, e: Event) {
+  e.stopPropagation()
   editShop.value = shop
   shopForm.value = { name: shop.name, address: shop.address, description: shop.description }
   showShopModal.value = true
@@ -46,7 +47,8 @@ async function handleShopSubmit() {
   showShopModal.value = false
 }
 
-async function handleShopDelete(id: string) {
+async function handleShopDelete(id: string, e: Event) {
+  e.stopPropagation()
   if (confirm('ยืนยันลบร้านค้า?')) {
     await shopStore.removeShop(id)
   }
@@ -56,69 +58,36 @@ async function handleShopDelete(id: string) {
 <template>
   <div class="page">
 
-    <!-- ส่วนบน: ร้านค้าของฉัน (card) -->
     <div class="section-header">
-      <h1 class="shops-title">ร้านค้าของฉัน</h1>
+      <h1 class="page-title">ร้านค้าของฉัน</h1>
       <button class="btn-create-shop" @click="openCreateShop">+ สร้างร้านค้า</button>
+    </div>
+
+    <!-- ค้นหา -->
+    <div class="search-box">
+      <input v-model="search" placeholder="ค้นหาร้านค้า..." class="search-input" />
+      <button v-if="search" class="btn-clear" @click="search = ''; shopStore.fetchAll()">✕</button>
     </div>
 
     <p v-if="shopStore.loading" class="txt-gray">กำลังโหลด...</p>
 
-    <div v-else class="shop-cards">
-      <div v-for="shop in shopStore.shops" :key="shop._id" class="shop-card" @click="goToShop(shop._id)">
-        <button class="shop-card__delete" @click.stop="handleShopDelete(shop._id)">✕</button>
-        <div class="shop-card__icon"></div>
-        <div class="shop-card__name">{{ shop.name }}</div>
-        <div class="shop-card__desc">{{ shop.description || '-' }}</div>
-      </div>
-
-      <div class="shop-card shop-card--add" @click="openCreateShop">
-        <div class="shop-card__plus">+</div>
-        <div class="shop-card__name">เพิ่มร้านค้า</div>
-      </div>
-    </div>
-
-    <p v-if="!shopStore.loading && shopStore.shops.length === 0" class="txt-gray" style="margin-top:8px">
-      ยังไม่มีร้านค้า กด "สร้างร้านค้า" เพื่อเริ่มต้น
+    <p v-if="!shopStore.loading && shopStore.shops.length === 0" class="txt-gray">
+      {{ search ? `ไม่พบร้านค้า "${search}"` : 'ยังไม่มีร้านค้า กด "+ สร้างร้านค้า" เพื่อเริ่มต้น' }}
     </p>
 
-    <!-- ส่วนล่าง: จัดการร้านค้า (ตาราง) -->
-    <div class="manage-section">
-      <div class="section-header" style="margin-bottom:12px">
-        <h2 class="manage-title">จัดการร้านค้า</h2>
+    <div v-if="!shopStore.loading && shopStore.shops.length > 0" class="shop-cards">
+      <div v-for="shop in shopStore.shops" :key="shop._id" class="shop-card" @click="goToShop(shop._id)">
+        <button class="card-delete" @click="handleShopDelete(shop._id, $event)">✕</button>
+        <div class="card-icon"></div>
+        <div class="card-name">{{ shop.name }}</div>
+        <div class="card-desc">{{ shop.description || shop.address || '-' }}</div>
+        <button class="card-edit-btn" @click="openEditShop(shop, $event)">แก้ไข</button>
       </div>
 
-      <div class="search-box">
-        <input v-model="search" placeholder=" ค้นหาร้านค้า..." class="search-input" />
-        <button v-if="search" class="btn-clear" @click="search = ''; shopStore.fetchAll()">✕</button>
+      <div class="shop-card card-add" @click="openCreateShop">
+        <div class="card-plus">+</div>
+        <div class="card-name">เพิ่มร้านค้า</div>
       </div>
-
-      <p v-if="!shopStore.loading && shopStore.shops.length === 0 && search" class="txt-gray">
-        ไม่พบร้านค้า "{{ search }}"
-      </p>
-
-      <table v-if="shopStore.shops.length > 0" class="data-table">
-        <thead>
-          <tr>
-            <th>ชื่อร้านค้า</th>
-            <th>ที่อยู่</th>
-            <th>รายละเอียด</th>
-            <th>จัดการ</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="shop in shopStore.shops" :key="shop._id">
-            <td>{{ shop.name }}</td>
-            <td>{{ shop.address || '-' }}</td>
-            <td>{{ shop.description || '-' }}</td>
-            <td>
-              <button class="btn-view" @click="goToShop(shop._id)">สินค้า</button>
-              <button class="btn-edit" @click="openEditShop(shop)">แก้ไข</button>
-              <button class="btn-del" @click="handleShopDelete(shop._id)">ลบ</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
 
   </div>

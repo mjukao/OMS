@@ -1,194 +1,136 @@
-/* ============================================================
-   RESET & BASE
-   ============================================================ */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f2f5;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f5f5f5;
   color: #333;
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-/* ============================================================
-   NAVBAR — App.vue
-   ============================================================ */
+/* navbar */
 .navbar {
-  background: #200a42;
-  height: 75px;
-  padding: 0 32px;
+  background: #1e1e2e;
+  height: 60px;
+  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 99;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
-
-.navbar-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.logo {
-  color: #fff;
-  font-weight: 200;
-  font-size: 35px;
-  margin-right: 32px;
-  letter-spacing: 1px;
-}
-
+.navbar-left { display: flex; align-items: center; gap: 8px; }
+.navbar-right { display: flex; align-items: center; gap: 12px; }
+.logo { color: #fff; font-size: 20px; font-weight: 700; margin-right: 24px; }
 .navbar-left a {
-  color: #94a3b8;
+  color: #aaa;
   text-decoration: none;
   font-size: 14px;
   padding: 6px 12px;
   border-radius: 6px;
-  transition: all 0.15s;
 }
-
-.navbar-left a:hover {
-  color: #fff;
-  background: rgba(231, 226, 226, 0.07);
-}
-
-.navbar-left a.router-link-active {
-  color: #fff;
-  background: rgba(255,255,255,0.1);
-}
-
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.username {
-  color: #64748b;
-  font-size: 13px;
-}
-
+.navbar-left a:hover { color: #fff; background: #333; }
+.navbar-left a.router-link-active { color: #fff; background: #333; }
+.username { color: #999; font-size: 13px; }
 .btn-logout {
-  background: transparent;
-  border: 2px solid #d60d0d;
-  color: #d1d1d1;
-  padding: 5px 14px;
+  background: none;
+  border: 1px solid #555;
+  color: #aaa;
+  padding: 5px 12px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
-  transition: all 0.15s;
 }
+.btn-logout:hover { border-color: #aaa; color: #fff; }
 
-.btn-logout:hover {
-  border-color: #089624;
-  color: #fff;
+/* layout */
+.page { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
+.section-header h1 { font-size: 18px; font-weight: 700; }
+.section-header h2 { font-size: 15px; font-weight: 600; }
+.product-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid #ddd; }
+.manage-section  { margin-top: 24px; padding-top: 20px; border-top: 1px solid #ddd; }
+.manage-title { font-size: 15px; font-weight: 600; }
+.shop-name { color: #2563eb; }
+.page-title { font-size: 18px; font-weight: 700; }
 
-/* ============================================================
-   BUTTONS
-   ============================================================ */
+/* ปุ่มทั้งหมด */
+button { cursor: pointer; font-family: inherit; font-size: 13px; }
 
-/* Base — ใช้คู่กับ btn-primary หรือ btn-google ใน LoginView */
-.btn {
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s, opacity 0.2s;
-}
-.btn:hover { opacity: 0.85; }
-
-/* Primary (สีเขียว) — LoginView */
 .btn-primary {
-  background: #16a34a;
+  background: #2563eb;
   color: #fff;
   border: none;
-  padding: 8px 20px;
+  padding: 8px 18px;
   border-radius: 6px;
   font-size: 14px;
-  cursor: pointer;
 }
+.btn-primary:hover { background: #1d4ed8; }
 .btn-primary:disabled { opacity: 0.5; cursor: default; }
 
-/* Google login — LoginView */
 .btn-google {
-  background-color: #fff;
-  color: #444;
+  background: #fff;
+  color: #333;
   border: 1px solid #ddd;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
-  width: 100%;
   padding: 10px;
   border-radius: 6px;
-  cursor: pointer;
+  width: 100%;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
+.btn-google:hover { background: #f5f5f5; }
 
-/* Form action buttons — ใช้ในทุก form/modal */
 .btn-add {
-  background: #1a1a2e;
+  background: #333;
   color: #fff;
   border: none;
-  padding: 7px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 6px;
   margin-left: 8px;
 }
-.btn-add:hover { background: #2d2d44; }
+.btn-add:hover { background: #555; }
 
 .btn-save {
   background: #16a34a;
   color: #fff;
   border: none;
   padding: 6px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
+  border-radius: 6px;
 }
 .btn-save:hover { background: #15803d; }
 
 .btn-cancel {
-  background: #f3f4f6;
-  color: #444;
+  background: #f5f5f5;
+  color: #333;
   border: 1px solid #ddd;
   padding: 6px 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  margin-left: 8px;
+  border-radius: 6px;
+  margin-left: 6px;
 }
-.btn-cancel:hover { background: #e5e7eb; }
+.btn-cancel:hover { background: #e5e5e5; }
 
-/* Table row action buttons (สีดำ) — ShopView, ProductsView */
-.btn-view,
-.btn-edit,
-.btn-del {
-  background: #000;
+.btn-view, .btn-edit, .btn-del {
+  background: #444;
   color: #fff;
   border: none;
   padding: 4px 10px;
   border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
+  margin-right: 4px;
 }
-.btn-view,
-.btn-edit { margin-right: 4px; }
+.btn-del { background: #dc2626; }
+.btn-del:hover { background: #b91c1c; }
+.btn-view:hover, .btn-edit:hover { background: #222; }
 
-.btn-remove {
-  background: none;
-  border: none;
-  color: #d62323;
-  cursor: pointer;
-  font-size: 13px;
-}
+.btn-remove { background: none; border: none; color: #dc2626; }
 
 .btn-clear {
   position: absolute;
@@ -197,186 +139,121 @@ body {
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #9ca3af;
-  cursor: pointer;
+  color: #999;
   font-size: 14px;
   padding: 0;
 }
-.btn-clear:hover { color: #374151; }
+.btn-clear:hover { color: #333; }
 
-/* Small colored action buttons — ProfileView, OrderView */
-.action-btns {
-  display: flex;
-  gap: 8px;
-}
+.action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
 
-.btn-sm {
-  padding: 5px 12px;
-  font-size: 13px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.btn-sm-edit         { background: #eff6ff; color: #6c44f4; }
+.btn-sm { padding: 4px 10px; font-size: 12px; border-radius: 4px; border: none; font-weight: 500; }
+.btn-sm-edit   { background: #eff6ff; color: #2563eb; }
+.btn-sm-delete { background: #fef2f2; color: #dc2626; }
+.btn-sm-view   { background: #f0fdf4; color: #16a34a; }
 .btn-sm-edit:hover   { background: #dbeafe; }
-.btn-sm-delete       { background: #fef2f2; color: #ef4444; }
 .btn-sm-delete:hover { background: #fee2e2; }
-.btn-sm-view         { background: #f0fdf4; color: #22c55e; }
 .btn-sm-view:hover   { background: #dcfce7; }
 
-/* ============================================================
-   LAYOUT — ทุกหน้า
-   ============================================================ */
-.page {
-  max-width: 900px;
-  margin: 32px auto;
-  padding: 0 16px;
+.btn-back {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 6px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
 }
+.btn-back:hover { background: #e5e5e5; }
 
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+.btn-create-shop {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-weight: 600;
 }
+.btn-create-shop:hover    { background: #1d4ed8; }
+.btn-create-shop:disabled { opacity: 0.5; cursor: default; }
 
-.section-header h1 { font-size: 20px; font-weight: 600; }
-.section-header h2 { font-size: 16px; font-weight: 600; }
-
-.shop-name { color: #4f46e5; }
-
-.product-section {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 2px solid #e5e7eb;
+.btn-orders {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 6px 12px;
+  border-radius: 6px;
 }
+.btn-orders:hover { background: #e0e0e0; }
 
-/* ============================================================
-   SEARCH — ShopView, ProductsView
-   ============================================================ */
-.search-box {
-  position: relative;
-  margin-bottom: 16px;
-}
-
+/* ช่องค้นหา */
+.search-box { position: relative; margin-bottom: 14px; }
 .search-input {
   width: 100%;
-  padding: 9px 36px 9px 12px;
-  border: 1px solid #d1d5db;
+  padding: 8px 36px 8px 12px;
+  border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 13px;
   outline: none;
   background: #fff;
-  color: #374151;
 }
-.search-input:focus { border-color: #6366f1; }
+.search-input:focus { border-color: #2563eb; }
 
-/* ============================================================
-   TABLE — ทุกหน้า
-   ============================================================ */
+/* ตาราง */
 .data-table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #e0e0e0;
   border-radius: 6px;
   overflow: hidden;
   font-size: 13px;
 }
-
 .data-table th {
-  background: #f9fafb;
-  padding: 10px 14px;
+  background: #f9f9f9;
+  padding: 10px 12px;
   text-align: left;
-  color: #6b7280;
+  color: #666;
   font-size: 12px;
   font-weight: 600;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e0e0e0;
 }
-
-.data-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid #f3f4f6;
-  color: #374151;
-}
-
+.data-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
 .data-table tr:last-child td { border-bottom: none; }
-.data-table tr:hover td    { background: #f9fafb; }
-.row-active td             { background: #eff6ff !important; }
+.data-table tr:hover td { background: #fafafa; }
+.row-active td { background: #eff6ff !important; }
 
-/* ============================================================
-   FORM — ทุกหน้า
-   ============================================================ */
+/* กล่องฟอร์ม */
 .form-box {
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   padding: 20px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
-
-.form-box h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  color: #374151;
-}
-
+.form-box h3 { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
 .form-group { margin-bottom: 12px; }
-
-.form-group label {
-  display: block;
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-
+.form-group label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
 .form-group input,
 .form-group textarea {
   width: 100%;
   padding: 7px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 13px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
   outline: none;
-  color: #374151;
 }
-
 .form-group input:focus,
-.form-group textarea:focus { border-color: #6366f1; }
-
+.form-group textarea:focus { border-color: #2563eb; }
 .form-group select {
   width: 49%;
   padding: 7px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 13px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
   outline: none;
-  color: #5c5c5c;
   background: #fff;
-  cursor: pointer;
-  appearance: auto;
 }
-.form-group select:focus { border-color: #1b1eda; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-actions { display: flex; align-items: center; margin-top: 8px; }
 
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.form-actions {
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
-}
-
-/* ============================================================
-   MODAL — OrderView, ProfileView
-   ============================================================ */
+/* modal */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -386,568 +263,456 @@ body {
   justify-content: center;
   z-index: 100;
 }
-
 .modal {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 24px;
-  width: 520px;
+  width: 500px;
   max-height: 90vh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
-
-.modal h2 {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0;
-}
-
-.modal label {
-  font-size: 13px;
-  color: #374151;
-  margin-bottom: 4px;
-  display: block;
-}
-
-.modal select,
-.modal input,
-.modal textarea {
+.modal h2 { font-size: 16px; font-weight: 700; }
+.modal label { font-size: 13px; color: #444; margin-bottom: 4px; display: block; }
+.modal select, .modal input, .modal textarea {
   width: 100%;
   padding: 8px 10px;
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 13px;
-  box-sizing: border-box;
   display: block;
 }
+.modal-footer { display: flex; gap: 8px; justify-content: flex-end; }
+.add-item-row { display: flex; gap: 6px; align-items: center; }
+.add-item-row select { flex: 1; }
+.add-item-row input  { width: 72px; }
 
-.add-item-row {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.add-item-row select { flex: 1; min-width: 0; }
-.add-item-row input  { width: 72px; flex-shrink: 0; }
-
-.modal-footer {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-.badge-pending   { background: #fef9c3; color: #854d0e; }  /* เหลือง */
-.badge-confirmed { background: #dbeafe; color: #1d4ed8; }  /* ฟ้า */
-.badge-shipped   { background: #ede9fe; color: #6d28d9; }  /* ม่วง */
-.badge-delivered { background: #dcfce7; color: #16a34a; }  /* เขียว */
-.badge-cancelled { background: #fee2e2; color: #dc2626; }  /* แดง */
-/* ============================================================
-   ADDRESS CARDS — ProfileView, OrderView
-   ============================================================ */
-.addr-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  padding: 12px 14px;
-  margin-bottom: 8px;
-  background: #fff;
-}
-
-.addr-default {
-  border-color: #16a34a;
-  background: #f0fdf4;
-}
-
-.addr-select-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin-bottom: 6px;
-  cursor: pointer;
-  background: #fff;
-  transition: border-color 0.15s;
-}
-.addr-select-card:hover { border-color: #16a34a; }
-
-.addr-selected {
-  border-color: #16a34a;
-  background: #f0fdf4;
-}
-
-/* ============================================================
-   LOGIN — LoginView
-   ============================================================ */
+/* login */
 .login-wrap {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f2f5;
 }
-
 .login-card {
   background: #fff;
-  border-radius: 12px;
-  padding: 40px;
+  border-radius: 10px;
+  padding: 36px;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  max-width: 380px;
+  border: 1px solid #e0e0e0;
 }
-
-.login-card h1 {
-  font-size: 22px;
-  color: #1e1e2e;
-  margin-bottom: 24px;
-  text-align: center;
-}
-
+.login-card h1 { font-size: 20px; font-weight: 700; margin-bottom: 24px; text-align: center; }
 .login-divider {
   text-align: center;
   color: #aaa;
-  font-size: 13px;
-  margin: 16px 0;
+  font-size: 12px;
+  margin: 14px 0;
   position: relative;
 }
-
 .login-divider::before,
 .login-divider::after {
   content: '';
   position: absolute;
   top: 50%;
-  width: 40%;
+  width: 42%;
   height: 1px;
-  background: #eee;
+  background: #ddd;
 }
-
 .login-divider::before { left: 0; }
 .login-divider::after  { right: 0; }
-
-.login-switch {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 13px;
-  color: #888;
-}
-
-.login-switch button {
-  background: none;
-  border: none;
-  color: #5b2be1;
-  cursor: pointer;
-  font-weight: 600;
-}
-.input-group {
-  display: flex;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.input-group input {
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 8px 12px;
-  border-radius: 0;
-}
-
-.input-group:focus-within {
-  border-color: #6366f1;
-}
-
+.login-switch { text-align: center; margin-top: 16px; font-size: 13px; color: #888; }
+.login-switch button { background: none; border: none; color: #2563eb; cursor: pointer; font-weight: 600; }
+.input-group { display: flex; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+.input-group input { flex: 1; border: none; outline: none; padding: 7px 10px; }
+.input-group:focus-within { border-color: #2563eb; }
 .input-suffix {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: #f5f5f5;
+  color: #666;
   padding: 7px 10px;
   font-size: 13px;
-  white-space: nowrap;
-  border-left: 1px solid #d1d5db;
+  border-left: 1px solid #ddd;
   display: flex;
   align-items: center;
 }
 
-/* ============================================================
-   UTILITIES — badges, alerts, stock, text helpers
-   ============================================================ */
-.badge {
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.badge-green { background: #dcfce7; color: #16a34a; }
-.badge-red   { background: #fee2e2; color: #dc2626; }
-
-.alert {
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  margin-bottom: 16px;
-}
-
-.alert-error   { background: #fee2e2; color: #dc2626; }
-.alert-success { background: #dcfce7; color: #16a34a; }
-
-.stock-ok  { color: #16a34a; font-weight: 500; }
-.stock-out { color: #dc2626; font-weight: 500; }
-
-.txt-error { color: #dc2626; font-size: 13px; padding: 8px 0; }
-.txt-gray  { color: #9ca3af; font-size: 13px; padding: 16px 0; }
-
-.loading,
-.empty {
-  text-align: center;
-  padding: 48px;
-  color: #aaa;
-  font-size: 15px;
-}
-
-/* ============================================================
-   ORDER EXTRAS — OrderView
-   ============================================================ */
-.filter-bar { margin-bottom: 16px; }
-
-.filter-bar select {
-  padding: 8px 12px;
-  border: 1px solid #d1d5db;
+/* ที่อยู่ */
+.addr-card {
+  border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 13px;
-  outline: none;
-  color: #374151;
-  background: #fff;
-  cursor: pointer;
-}
-.filter-bar select:focus { border-color: #6366f1; }
-
-.item-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-size: 13px;
-}
-
-.item-meta {
-  color: #9ca3af;
-  font-size: 12px;
-  margin-left: 4px;
-}
-
-/* ============================================================
-   SHOP VIEW — ShopView.vue
-   ============================================================ */
-.shops-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1e1b4b;
-}
-
-.btn-create-shop {
-  background: #4f46e5;
-  color: #fff;
-  border: none;
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.btn-create-shop:hover { background: #4338ca; }
-
-.shop-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  padding: 12px;
   margin-bottom: 8px;
+  background: #fff;
 }
+.addr-default { border-color: #16a34a; background: #f0fdf4; }
+.addr-select-card {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  background: #fff;
+}
+.addr-select-card:hover { border-color: #16a34a; }
+.addr-selected { border-color: #16a34a; background: #f0fdf4; }
 
+/* การ์ดร้านค้า */
+.shop-cards { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; }
 .shop-card {
   position: relative;
-  width: 160px;
+  width: 150px;
   background: #fff;
-  border: 2px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 20px 14px 16px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 18px 12px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
   user-select: none;
 }
-.shop-card:hover          { border-color: #a5b4fc; box-shadow: 0 2px 8px rgba(79,70,229,0.1); }
-.shop-card--active        { border-color: #4f46e5; box-shadow: 0 2px 12px rgba(79,70,229,0.2); }
-.shop-card--add           { border: 2px dashed #c7d2fe; background: #f5f3ff; color: #6366f1; }
-.shop-card--add:hover     { border-color: #6366f1; }
-
-.shop-card__icon  { font-size: 36px; }
-.shop-card__plus  { font-size: 36px; color: #818cf8; line-height: 1; }
-
-.shop-card__name {
-  font-size: 13px;
-  font-weight: 600;
-  text-align: center;
-  color: #1f2937;
-}
-.shop-card--add .shop-card__name { color: #6366f1; }
-
-.shop-card__desc {
-  font-size: 11px;
-  color: #9ca3af;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 130px;
-}
-
-.shop-card__delete {
+.shop-card:hover { border-color: #2563eb; }
+.card-add { border: 1px dashed #bbb; background: #fafafa; }
+.card-add:hover { border-color: #2563eb; }
+.card-icon  { font-size: 32px; }
+.card-plus  { font-size: 32px; color: #aaa; }
+.card-name  { font-size: 13px; font-weight: 600; text-align: center; }
+.card-add .card-name { color: #888; }
+.card-desc  { font-size: 11px; color: #999; text-align: center; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-delete {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: #f3f4f6;
+  top: 6px; right: 6px;
+  background: none;
   border: none;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
+  color: #ccc;
+  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.card-delete:hover { background: #fee2e2; color: #dc2626; }
+.card-edit-btn {
+  margin-top: 6px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 3px 10px;
+  border-radius: 4px;
   font-size: 11px;
-  color: #6b7280;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
 }
-.shop-card__delete:hover { background: #fee2e2; color: #ef4444; }
+.card-edit-btn:hover { background: #e0e0e0; }
 
-.shop-card__check {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: #16a34a;
-  color: #fff;
+/* หน้าสินค้า/ออเดอร์ของร้าน */
+.back-header { display: flex; align-items: center; gap: 12px; }
+.page-sub { font-size: 12px; color: #888; margin-top: 2px; }
+
+/* filter */
+.filter-bar { margin-bottom: 14px; }
+.filter-bar select {
+  padding: 7px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* รายการ order */
+.item-list { list-style: none; margin: 0; padding: 0; font-size: 12px; }
+.item-meta { color: #999; font-size: 11px; margin-left: 4px; }
+
+/* step indicator */
+.steps { display: flex; align-items: center; gap: 4px; }
+.step {
+  width: 26px; height: 26px;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.manage-section {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 2px solid #e5e7eb;
-}
-
-.manage-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1e1b4b;
-}
-.btn-orders {
-  background: #1311b2;
-  
-}
-/* ============================================================
-   SHOP PRODUCTS VIEW — ShopProductsView.vue
-   ============================================================ */
-.shop-products-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.shop-products-desc {
-  font-size: 13px;
-  color: #6b7280;
-  margin-top: 2px;
-}
-
-.btn-back {
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
-  color: #374151;
-  padding: 7px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s;
-}
-.btn-back:hover { background: #e5e7eb; }
-
-.btn-orders {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1d4ed8;
-  padding: 7px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s;
-}
-.btn-orders:hover { background: #dbeafe; }
-
-/* ============================================================
-   CREATE ORDER — ShopCreateOrderView.vue
-   ============================================================ */
-.steps-indicator {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.step-dot {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #e5e7eb;
-  color: #9ca3af;
+  background: #e0e0e0;
+  color: #999;
   font-size: 12px;
   font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
 }
-.step-dot--active { background: #4f46e5; color: #fff; }
-.step-line { width: 24px; height: 2px; background: #e5e7eb; }
+.step-on { background: #2563eb; color: #fff; }
+.step-line { width: 20px; height: 2px; background: #e0e0e0; }
 
-.sender-info { background: #f9fafb; border-radius: 6px; padding: 12px; }
-.sender-row  { display: flex; gap: 8px; font-size: 13px; margin-bottom: 4px; }
-.sender-row:last-child { margin-bottom: 0; }
-.sender-label { color: #6b7280; min-width: 48px; }
+/* ข้อมูลผู้ส่ง */
+.sender-box { background: #f9f9f9; border-radius: 6px; padding: 12px; }
+.srow { display: flex; gap: 8px; font-size: 13px; margin-bottom: 4px; }
+.srow:last-child { margin-bottom: 0; }
+.slabel { color: #888; min-width: 48px; }
 
-.product-select-grid {
+/* เลือกสินค้า */
+.product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
   margin-top: 8px;
 }
-.product-select-card {
+.product-card {
   position: relative;
-  border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 14px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
   cursor: pointer;
-  transition: border-color 0.15s;
   background: #fff;
 }
-.product-select-card:hover         { border-color: #a5b4fc; }
-.product-select-card--selected     { border-color: #4f46e5; background: #f5f3ff; }
-.product-select-name  { font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 4px; }
-.product-select-price { font-size: 13px; color: #4f46e5; font-weight: 600; }
-.product-select-stock { font-size: 11px; margin-top: 4px; }
-.product-select-check {
+.product-card:hover { border-color: #2563eb; }
+.product-card-on { border-color: #2563eb; background: #eff6ff; }
+.product-name  { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.product-price { font-size: 13px; color: #2563eb; font-weight: 600; }
+.product-stock { font-size: 11px; margin-top: 4px; color: #888; }
+.product-check {
   position: absolute;
-  top: 8px; right: 8px;
-  background: #4f46e5;
+  top: 6px; right: 6px;
+  background: #2563eb;
   color: #fff;
   border-radius: 50%;
-  width: 18px; height: 18px;
+  width: 16px; height: 16px;
   font-size: 10px;
   display: flex; align-items: center; justify-content: center;
 }
 
-.qty-control {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.qty-control button {
+/* ปรับจำนวน */
+.qty-box { display: flex; align-items: center; gap: 6px; }
+.qty-box button {
   width: 24px; height: 24px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  background: #f9fafb;
-  cursor: pointer;
+  background: #f5f5f5;
   font-size: 14px;
   display: flex; align-items: center; justify-content: center;
 }
-.qty-control button:hover { background: #e5e7eb; }
-.qty-control span { min-width: 20px; text-align: center; font-size: 13px; }
+.qty-box button:hover { background: #e0e0e0; }
+.qty-box span { min-width: 20px; text-align: center; }
 
-.order-total {
-  text-align: right;
-  margin-top: 12px;
-  font-size: 14px;
-  color: #374151;
-}
-.order-total strong { color: #4f46e5; font-size: 16px; }
+.order-sum { text-align: right; margin-top: 12px; font-size: 14px; }
+.order-sum strong { color: #2563eb; }
 
-.payment-options { display: flex; gap: 16px; margin-top: 8px; }
-.payment-option {
+/* ชำระเงิน */
+.pay-list { display: flex; gap: 12px; margin-top: 8px; }
+.pay-item {
   flex: 1;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: border-color 0.15s;
 }
-.payment-option:hover           { border-color: #a5b4fc; }
-.payment-option--selected       { border-color: #4f46e5; background: #f5f3ff; }
-.payment-icon  { font-size: 28px; }
-.payment-label { font-size: 13px; font-weight: 600; color: #374151; }
+.pay-item:hover { border-color: #2563eb; }
+.pay-item-on { border-color: #2563eb; background: #eff6ff; }
+.pay-icon  { font-size: 28px; }
+.pay-label { font-size: 13px; font-weight: 600; }
 
-.summary-section { margin-bottom: 4px; }
-.summary-label   { font-size: 12px; color: #6b7280; font-weight: 600; margin-bottom: 6px; }
-.summary-item {
+/* สรุป */
+.summary { margin-bottom: 8px; }
+.sum-label { font-size: 12px; color: #888; font-weight: 600; margin-bottom: 6px; }
+.sum-item {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
   padding: 4px 0;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f0f0f0;
 }
-.summary-total {
+.sum-total {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
   font-size: 14px;
 }
-.summary-total strong { color: #4f46e5; font-size: 16px; }
+.sum-total strong { color: #2563eb; }
 
-/* ============================================================
-   BILL MODAL — ShopOrdersView.vue
-   ============================================================ */
-.bill-modal { max-width: 480px; width: 100%; }
-.bill-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
-}
-.bill-title { font-size: 16px; font-weight: 700; color: #1e1b4b; }
-.bill-id    { font-size: 13px; color: #6b7280; margin-top: 2px; }
-.bill-divider { border: none; border-top: 1px dashed #e5e7eb; margin: 12px 0; }
-.bill-section { margin-bottom: 4px; }
-.bill-section-title { font-size: 12px; font-weight: 700; color: #6366f1; margin-bottom: 8px; }
-.bill-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  padding: 3px 0;
-}
-.bill-label  { color: #6b7280; min-width: 80px; }
-.bill-item-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  padding: 4px 0;
-  border-bottom: 1px solid #f3f4f6;
-}
-.bill-item-qty { color: #9ca3af; margin: 0 8px; }
-.bill-total-row { padding-top: 6px; font-size: 14px; }
+/* บิล */
+.bill-box { max-width: 460px; width: 100%; }
+.bill-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.bill-title { font-size: 16px; font-weight: 700; }
+.bill-num { font-size: 12px; color: #888; margin-top: 2px; }
+.dashed { border: none; border-top: 1px dashed #ddd; margin: 12px 0; }
+.bill-part { margin-bottom: 4px; }
+.bill-sub { font-size: 12px; font-weight: 700; color: #2563eb; margin-bottom: 8px; }
+.brow { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; }
+.blabel { color: #888; min-width: 80px; }
+.bitem { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
+.bqty { color: #aaa; margin: 0 8px; }
+.btotal { padding-top: 6px; font-size: 14px; }
 
-/* badge สำหรับ order status */
+/* badge */
+.badge { padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge-green     { background: #dcfce7; color: #16a34a; }
+.badge-red       { background: #fee2e2; color: #dc2626; }
 .badge-pending   { background: #fef9c3; color: #854d0e; }
 .badge-confirmed { background: #dbeafe; color: #1e40af; }
 .badge-shipped   { background: #e0e7ff; color: #3730a3; }
 .badge-delivered { background: #dcfce7; color: #166534; }
 .badge-cancelled { background: #fee2e2; color: #991b1b; }
+
+/* อื่นๆ */
+.alert { padding: 12px 16px; border-radius: 6px; font-size: 13px; margin-bottom: 14px; }
+.alert-error   { background: #fee2e2; color: #dc2626; }
+.alert-success { background: #dcfce7; color: #16a34a; }
+.stock-ok  { color: #16a34a; font-weight: 500; }
+.stock-out { color: #dc2626; font-weight: 500; }
+.txt-error { color: #dc2626; font-size: 12px; }
+.txt-gray  { color: #aaa; font-size: 13px; padding: 16px 0; }
+.loading, .empty { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
+
+/* ============================================================
+   RESPONSIVE
+   - desktop  : > 1024px  (ค่าปกติ ด้านบนทั้งหมด)
+   - laptop   : ≤ 1024px
+   - tablet   : ≤ 768px
+   - mobile   : ≤ 480px
+   ============================================================ */
+
+/* ---------- Laptop / small desktop ---------- */
+@media (max-width: 1024px) {
+  .page { max-width: 100%; padding: 0 20px; }
+  .shop-card { width: 140px; }
+}
+
+/* ---------- Tablet / iPad ---------- */
+@media (max-width: 768px) {
+  /* navbar */
+  .navbar { padding: 0 16px; flex-wrap: wrap; height: auto; min-height: 60px; }
+  .navbar-left { flex-wrap: wrap; gap: 4px; }
+  .navbar-left a { font-size: 12px; padding: 5px 8px; }
+  .logo { font-size: 16px; margin-right: 12px; }
+  .username { display: none; }
+
+  /* page */
+  .page { padding: 0 12px; margin: 16px auto; }
+
+  /* section header */
+  .section-header { flex-wrap: wrap; gap: 10px; }
+
+  /* shop cards */
+  .shop-cards { gap: 10px; }
+  .shop-card { width: 130px; padding: 14px 10px 12px; }
+  .card-icon { font-size: 26px; }
+  .card-plus { font-size: 26px; }
+  .card-name { font-size: 12px; }
+
+  /* form */
+  .form-row { grid-template-columns: 1fr; }
+  .form-box { padding: 16px; }
+
+  /* table — horizontal scroll */
+  .data-table { display: block; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+
+  /* modal */
+  .modal { width: 92vw; padding: 20px 16px; }
+  .bill-box { max-width: 92vw; }
+
+  /* product grid */
+  .product-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+
+  /* payment */
+  .pay-list { flex-direction: column; }
+  .pay-item { flex-direction: row; justify-content: flex-start; gap: 14px; padding: 14px; }
+
+  /* step */
+  .steps { gap: 2px; }
+  .step { width: 22px; height: 22px; font-size: 11px; }
+  .step-line { width: 14px; }
+
+  /* filter */
+  .filter-bar select { width: 100%; }
+
+  /* action buttons */
+  .action-btns { flex-direction: column; gap: 6px; }
+  .action-btns select { width: 100%; }
+}
+
+/* ---------- Mobile / Phone ---------- */
+@media (max-width: 480px) {
+  /* navbar */
+  .navbar { padding: 0 12px; gap: 6px; }
+  .navbar-left { gap: 2px; }
+  .navbar-left a { font-size: 11px; padding: 4px 6px; }
+  .logo { font-size: 15px; margin-right: 8px; }
+  .btn-logout { font-size: 11px; padding: 4px 8px; }
+
+  /* page */
+  .page { padding: 0 10px; margin: 12px auto; }
+
+  /* section header — stack ปุ่มลงล่าง */
+  .section-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .section-header > button,
+  .section-header > div > button { width: 100%; justify-content: center; }
+
+  /* back-header */
+  .back-header { gap: 8px; }
+
+  /* shop cards — 2 columns */
+  .shop-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .shop-card { width: 100%; padding: 14px 8px 12px; }
+
+  /* form */
+  .form-box { padding: 14px 12px; }
+  .form-box h3 { font-size: 13px; }
+  .form-group input,
+  .form-group textarea { font-size: 13px; }
+  .form-row { grid-template-columns: 1fr; gap: 8px; }
+  .form-actions { flex-direction: column; gap: 8px; }
+  .form-actions button { width: 100%; }
+
+  /* table */
+  .data-table { font-size: 12px; }
+  .data-table th,
+  .data-table td { padding: 8px 10px; }
+
+  /* modal — เต็มจอ */
+  .modal-backdrop { align-items: flex-end; padding: 0; }
+  .modal { width: 100vw; max-height: 92vh; border-radius: 14px 14px 0 0; padding: 20px 16px 32px; }
+  .bill-box { max-width: 100vw; }
+
+  /* product grid — 2 columns */
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .product-card { padding: 10px; }
+  .product-name { font-size: 12px; }
+  .product-price { font-size: 12px; }
+
+  /* qty */
+  .qty-box button { width: 28px; height: 28px; }
+
+  /* payment */
+  .pay-list { flex-direction: column; gap: 8px; }
+  .pay-item { flex-direction: row; justify-content: flex-start; gap: 12px; padding: 12px; }
+  .pay-icon { font-size: 22px; }
+
+  /* summary */
+  .sum-item { font-size: 12px; }
+  .sum-total { font-size: 13px; }
+
+  /* bill */
+  .bill-top { flex-wrap: wrap; gap: 8px; }
+  .brow { font-size: 12px; }
+  .blabel { min-width: 64px; }
+
+  /* step */
+  .steps { gap: 2px; }
+  .step { width: 20px; height: 20px; font-size: 10px; }
+  .step-line { width: 10px; }
+
+  /* buttons */
+  .btn-create-shop { width: 100%; text-align: center; }
+  .btn-orders { width: 100%; }
+  .btn-sm { font-size: 11px; padding: 4px 8px; }
+
+  /* filter */
+  .filter-bar select { width: 100%; font-size: 13px; }
+
+  /* search */
+  .search-input { font-size: 13px; }
+
+  /* action buttons — stack */
+  .action-btns { flex-direction: column; align-items: flex-start; gap: 5px; }
+  .action-btns select { width: 100%; }
+
+  /* login card */
+  .login-card { margin: 16px; padding: 24px 16px; }
+}

@@ -8,12 +8,13 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 onMounted(async () => {
-  // อ่าน token จาก URL เช่น /auth/callback?token=xxxxx
   const token = route.query.token as string
+  const refreshToken = route.query.refresh as string
+
   if (token) {
-    authStore.setToken(token)
+    authStore.setToken(token, refreshToken)
     await authStore.fetchMe()
-    router.push('/products')
+    router.push('/shops')
   } else {
     router.push('/login')
   }
@@ -21,5 +22,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <p>กำลัง Login...</p>
+  <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#888">
+    กำลังเข้าสู่ระบบ...
+  </div>
 </template>

@@ -2,8 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useOrderStore } from '../stores/order.store'
-import type { Order } from '../types/order.type'
-import axios from 'axios'
+import api from '../api/base'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,19 +12,26 @@ const shopId = route.params.id as string
 const shopName = ref('')
 const shopAddress = ref('')
 const filterStatus = ref('')
-const billOrder = ref<Order | null>(null)
+const billOrder = ref<any>(null)
+const pageError = ref('')
 
 onMounted(async () => {
-  const [shopRes] = await Promise.all([
-    axios.get(`http://localhost:3000/api/shops/${shopId}`),
-    orderStore.fetchAll({ shopId }),
-  ])
-  shopName.value = shopRes.data.name
-  shopAddress.value = shopRes.data.address || ''
+  try {
+    const shopRes = await api.get(`/shops/${shopId}`)
+    shopName.value = shopRes.data.name
+    shopAddress.value = shopRes.data.address || ''
+    await orderStore.fetchAll({ shopId })
+  } catch (e: any) {
+    pageError.value = e.response?.data?.message || 'โหลดข้อมูลไม่ได้'
+  }
 })
 
 async function load() {
-  await orderStore.fetchAll({ shopId, status: filterStatus.value || undefined })
+  try {
+    await orderStore.fetchAll({ shopId, status: filterStatus.value || undefined })
+  } catch (e: any) {
+    pageError.value = e.response?.data?.message || 'โหลดข้อมูลไม่ได้'
+  }
 }
 
 async function changeStatus(id: string, event: Event) {
@@ -50,7 +56,6 @@ function formatDate(iso: string) {
   })
 }
 
-// แยกข้อมูลผู้รับจาก shippingAddress string
 function parseShipping(addr: string) {
   const parts = addr.split(' | ')
   const name = parts[0] ? parts[0].replace('ผู้รับ: ', '') : addr
@@ -59,9 +64,10 @@ function parseShipping(addr: string) {
   return { name, phone, address }
 }
 
-// แยกวิธีชำระเงินจาก note
-function parsePayment(note?: string) {
-  return note?.match(/ชำระเงิน: (.+)/)?.[1] ?? '-'
+function parsePayment(note: string) {
+  if (!note) return '-'
+  const parts = note.split('ชำระเงิน: ')
+  return parts[1] || '-'
 }
 
 const statusLabel: Record<string, string> = {
@@ -75,12 +81,11 @@ const statusLabel: Record<string, string> = {
 
 <template>
   <div class="page">
-    <!-- Header -->
     <div class="section-header">
-      <div class="shop-products-header">
+      <div class="back-header">
         <button class="btn-back" @click="router.push(`/shops/${shopId}`)">← กลับ</button>
         <div>
-          <h1 class="shops-title">คำสั่งซื้อ — {{ shopName }}</h1>
+          <h1 class="page-title">คำสั่งซื้อ — {{ shopName }}</h1>
         </div>
       </div>
       <button class="btn-create-shop" @click="router.push(`/shops/${shopId}/orders/create`)">
@@ -88,7 +93,6 @@ const statusLabel: Record<string, string> = {
       </button>
     </div>
 
-    <!-- Filter -->
     <div class="filter-bar">
       <select v-model="filterStatus" @change="load">
         <option value="">ทุก status</option>
@@ -100,6 +104,7 @@ const statusLabel: Record<string, string> = {
       </select>
     </div>
 
+    <p v-if="pageError" class="txt-error">{{ pageError }}</p>
     <p v-if="orderStore.error" class="txt-error">{{ orderStore.error }}</p>
     <div v-if="orderStore.loading" class="loading">กำลังโหลด...</div>
 
@@ -107,7 +112,7 @@ const statusLabel: Record<string, string> = {
       <thead>
         <tr>
           <th>Order ID</th>
-          <th>ลูกค้า</th>
+          <th>ผู้รับสินค้า</th>
           <th>รายการสินค้า</th>
           <th>ยอดรวม</th>
           <th>Status</th>
@@ -121,7 +126,7 @@ const statusLabel: Record<string, string> = {
         </tr>
         <tr v-for="order in orderStore.orders" :key="order._id">
           <td>{{ order._id.slice(-6).toUpperCase() }}</td>
-          <td>{{ typeof order.user === 'object' ? (order.user as any)?.name : order.user }}</td>
+          <td>{{ parseShipping(order.shippingAddress).name }}</td>
           <td>
             <ul class="item-list">
               <li v-for="item in order.items" :key="item._id">
@@ -136,7 +141,7 @@ const statusLabel: Record<string, string> = {
           </td>
           <td>{{ formatDate(order.createdAt) }}</td>
           <td>
-            <div class="action-btns" style="flex-wrap:wrap;gap:4px">
+            <div class="action-btns">
               <button class="btn-sm btn-sm-view" @click="billOrder = order">ดูบิล</button>
               <select :value="order.status" :disabled="['cancelled', 'delivered'].includes(order.status)"
                 @change="changeStatus(order._id, $event)">
@@ -158,72 +163,68 @@ const statusLabel: Record<string, string> = {
 
   <!-- Bill Modal -->
   <div v-if="billOrder" class="modal-backdrop" @click.self="billOrder = null">
-    <div class="modal bill-modal">
-      <div class="bill-header">
+    <div class="modal bill-box">
+      <div class="bill-top">
         <div>
           <div class="bill-title">ใบเสร็จ / บิล</div>
-          <div class="bill-id">#{{ billOrder._id.slice(-6).toUpperCase() }}</div>
+          <div class="bill-num">#{{ billOrder._id.slice(-6).toUpperCase() }}</div>
         </div>
         <button class="btn-back" @click="billOrder = null">✕</button>
       </div>
 
-      <div class="bill-divider"></div>
+      <hr class="dashed" />
 
-      <!-- ผู้ส่ง -->
-      <div class="bill-section">
-        <div class="bill-section-title">📦 ผู้ส่ง</div>
-        <div class="bill-row"><span class="bill-label">ร้านค้า</span><span>{{ shopName }}</span></div>
-        <div class="bill-row"><span class="bill-label">ที่อยู่</span><span>{{ shopAddress || '-' }}</span></div>
+      <div class="bill-part">
+        <div class="bill-sub">ผู้ส่ง</div>
+        <div class="brow"><span class="blabel">ร้านค้า</span><span>{{ shopName }}</span></div>
+        <div class="brow"><span class="blabel">ที่อยู่</span><span>{{ shopAddress || '-' }}</span></div>
       </div>
 
-      <!-- ผู้รับ -->
-      <div class="bill-section">
-        <div class="bill-section-title">📬 ผู้รับ</div>
-        <div class="bill-row">
-          <span class="bill-label">ชื่อ</span>
+      <div class="bill-part">
+        <div class="bill-sub">ผู้รับ</div>
+        <div class="brow">
+          <span class="blabel">ชื่อ</span>
           <span>{{ parseShipping(billOrder.shippingAddress).name }}</span>
         </div>
-        <div class="bill-row">
-          <span class="bill-label">โทร</span>
+        <div class="brow">
+          <span class="blabel">โทร</span>
           <span>{{ parseShipping(billOrder.shippingAddress).phone }}</span>
         </div>
-        <div class="bill-row">
-          <span class="bill-label">ที่อยู่</span>
+        <div class="brow">
+          <span class="blabel">ที่อยู่</span>
           <span>{{ parseShipping(billOrder.shippingAddress).address }}</span>
         </div>
       </div>
 
-      <div class="bill-divider"></div>
+      <hr class="dashed" />
 
-      <!-- รายการสินค้า -->
-      <div class="bill-section">
-        <div class="bill-section-title">🛒 รายการสินค้า</div>
-        <div v-for="item in billOrder.items" :key="item._id" class="bill-item-row">
+      <div class="bill-part">
+        <div class="bill-sub">รายการสินค้า</div>
+        <div v-for="item in billOrder.items" :key="item._id" class="bitem">
           <span>{{ item.productName }}</span>
-          <span class="bill-item-qty">×{{ item.quantity }}</span>
+          <span class="bqty">×{{ item.quantity }}</span>
           <span>฿{{ (item.unitPrice * item.quantity).toLocaleString() }}</span>
         </div>
-        <div class="bill-divider" style="margin:8px 0"></div>
-        <div class="bill-row bill-total-row">
+        <hr class="dashed" style="margin:8px 0" />
+        <div class="brow btotal">
           <strong>ยอดรวม</strong>
           <strong>฿{{ billOrder.totalAmount.toLocaleString() }}</strong>
         </div>
       </div>
 
-      <div class="bill-divider"></div>
+      <hr class="dashed" />
 
-      <!-- ข้อมูลอื่น -->
-      <div class="bill-section">
-        <div class="bill-row">
-          <span class="bill-label">วิธีชำระเงิน</span>
+      <div class="bill-part">
+        <div class="brow">
+          <span class="blabel">วิธีชำระเงิน</span>
           <span>{{ parsePayment(billOrder.note) }}</span>
         </div>
-        <div class="bill-row">
-          <span class="bill-label">สถานะ</span>
+        <div class="brow">
+          <span class="blabel">สถานะ</span>
           <span :class="['badge', `badge-${billOrder.status}`]">{{ statusLabel[billOrder.status] }}</span>
         </div>
-        <div class="bill-row">
-          <span class="bill-label">วันที่สั่ง</span>
+        <div class="brow">
+          <span class="blabel">วันที่สั่ง</span>
           <span>{{ formatDate(billOrder.createdAt) }}</span>
         </div>
       </div>

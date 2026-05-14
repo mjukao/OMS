@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
+import api from '../api/base'
 
 const route = useRoute()
 const router = useRouter()
@@ -10,6 +10,7 @@ const shopId = route.params.id as string
 const shop = ref<any>(null)
 const products = ref<any[]>([])
 const loading = ref(true)
+const pageError = ref('')
 
 const showProductForm = ref(false)
 const editProduct = ref<any>(null)
@@ -17,19 +18,19 @@ const productForm = ref({ name: '', description: '', price: 0, stock: 0 })
 
 onMounted(async () => {
   try {
-    const [shopRes, productsRes] = await Promise.all([
-      axios.get(`http://localhost:3000/api/shops/${shopId}`),
-      axios.get(`http://localhost:3000/api/products/shop/${shopId}`),
-    ])
+    const shopRes = await api.get(`/shops/${shopId}`)
     shop.value = shopRes.data
+    const productsRes = await api.get(`/products/shop/${shopId}`)
     products.value = productsRes.data
+  } catch (e: any) {
+    pageError.value = e.response?.data?.message || 'โหลดข้อมูลไม่ได้'
   } finally {
     loading.value = false
   }
 })
 
 async function refreshProducts() {
-  const res = await axios.get(`http://localhost:3000/api/products/shop/${shopId}`)
+  const res = await api.get(`/products/shop/${shopId}`)
   products.value = res.data
 }
 
@@ -53,9 +54,9 @@ function openEditProduct(product: any) {
 async function handleProductSubmit() {
   if (!productForm.value.name) return
   if (editProduct.value) {
-    await axios.patch(`http://localhost:3000/api/products/${editProduct.value._id}`, productForm.value)
+    await api.patch(`/products/${editProduct.value._id}`, productForm.value)
   } else {
-    await axios.post('http://localhost:3000/api/products', {
+    await api.post('/products', {
       ...productForm.value,
       shopId,
     })
@@ -66,7 +67,7 @@ async function handleProductSubmit() {
 
 async function handleProductDelete(id: string) {
   if (confirm('ยืนยันลบสินค้า?')) {
-    await axios.delete(`http://localhost:3000/api/products/${id}`)
+    await api.delete(`/products/${id}`)
     refreshProducts()
   }
 }
@@ -74,16 +75,17 @@ async function handleProductDelete(id: string) {
 
 <template>
   <div class="page">
+    <p v-if="pageError" class="txt-error">{{ pageError }}</p>
     <div v-if="loading" class="txt-gray">กำลังโหลด...</div>
 
     <template v-else>
       <!-- Header -->
       <div class="section-header">
-        <div class="shop-products-header">
+        <div class="back-header">
           <button class="btn-back" @click="router.push('/shops')">← กลับ</button>
           <div>
-            <h1 class="shops-title"> {{ shop?.name }}</h1>
-            <p v-if="shop?.description" class="shop-products-desc">{{ shop.description }}</p>
+            <h1 class="page-title">{{ shop?.name }}</h1>
+            <p v-if="shop?.description" class="page-sub">{{ shop.description }}</p>
           </div>
         </div>
         <div style="display:flex;gap:8px">

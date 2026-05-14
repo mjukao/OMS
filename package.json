@@ -3,5 +3,8 @@
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/swagger": "^11.4.2",
     "mongoose": "^9.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.7.0"
   }
 }
