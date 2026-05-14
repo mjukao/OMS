@@ -52,9 +52,10 @@ function formatDate(iso: string) {
 
 // แยกข้อมูลผู้รับจาก shippingAddress string
 function parseShipping(addr: string) {
-  const name = addr.match(/ผู้รับ: ([^|]+)/)?.[1]?.trim() ?? addr
-  const phone = addr.match(/โทร: ([^|]+)/)?.[1]?.trim() ?? ''
-  const address = addr.match(/ที่อยู่: (.+)/)?.[1]?.trim() ?? ''
+  const parts = addr.split(' | ')
+  const name = parts[0] ? parts[0].replace('ผู้รับ: ', '') : addr
+  const phone = parts[1] ? parts[1].replace('โทร: ', '') : ''
+  const address = parts[2] ? parts[2].replace('ที่อยู่: ', '') : ''
   return { name, phone, address }
 }
 

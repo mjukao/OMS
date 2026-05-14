@@ -25,7 +25,12 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  // ส่งไป Google (redirect)
+  // ขอ access token ใหม่โดยใช้ refresh token
+  @Post('refresh')
+  refresh(@Body('refresh_token') refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
+  }
+
   @UseGuards(GoogleGuard)
   @Get('google')
   googleLogin() {}
