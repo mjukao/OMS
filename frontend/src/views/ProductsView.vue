@@ -14,11 +14,6 @@ let searchTimer: any = null
 
 onMounted(() => store.fetchAll())
 
-/*
- * watch search → เมื่อพิมพ์
- * debounce 500ms → รอให้หยุดพิมพ์ก่อนค่อยยิง API
- * ถ้าพิมพ์ต่อก่อน 500ms → reset timer
- */
 watch(search, (val) => {
   clearTimeout(searchTimer)
   searchTimer = setTimeout(() => {
@@ -64,20 +59,12 @@ async function handleDelete(id: string) {
 
     <!-- SEARCH -->
     <div class="search-box">
-      <input
-        v-model="search"
-        placeholder=" ค้นหาสินค้า..."
-        class="search-input"
-      />
+      <input v-model="search" placeholder=" ค้นหาสินค้า..." class="search-input" />
       <button v-if="search" class="btn-clear" @click="search = ''; store.fetchAll()">✕</button>
     </div>
 
     <div v-if="showForm" class="form-box">
-      <ProductForm
-        :edit-product="editProduct"
-        @submit="handleSubmit"
-        @cancel="showForm = false"
-      />
+      <ProductForm :edit-product="editProduct" @submit="handleSubmit" @cancel="showForm = false" />
     </div>
 
     <p v-if="store.loading" class="txt-gray">กำลังโหลด...</p>

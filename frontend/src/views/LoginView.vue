@@ -51,7 +51,8 @@ function loginGoogle() {
 
         <div class="form-group">
           <label>Password</label>
-          <input v-model="password" type="password" placeholder="••••••••" autocomplete="current-password" required minlength="6" />
+          <input v-model="password" type="password" placeholder="••••••••" autocomplete="current-password" required
+            minlength="6" />
         </div>
 
         <button type="submit" class="btn btn-primary" style="width:100%">

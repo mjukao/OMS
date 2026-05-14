@@ -25,7 +25,7 @@ const addrForm = ref({
     isDefault: false,
 })
 
-// ── validate เบอร์โทร ─────────────────────────────────
+// validate เบอร์โทร 
 function validatePhone(phone: string): string {
     if (!phone) return ''
     if (!/^0/.test(phone)) return 'ลองอีกครั้ง'
@@ -192,7 +192,7 @@ async function setDefault(addrId: string) {
                                     style="margin-left:6px">หลัก</span>
                             </div>
                             <div style="font-size:13px;color:#374151;margin-top:2px">{{ addr.fullName }} | {{ addr.phone
-                            }}</div>
+                                }}</div>
                             <div style="font-size:12px;color:#6b7280;margin-top:2px">{{ addr.address }}</div>
                         </div>
                         <div class="action-btns">
@@ -254,18 +254,3 @@ async function setDefault(addrId: string) {
 
     </div>
 </template>
-
-<style scoped>
-.addr-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    background: #fff;
-}
-
-.addr-default {
-    border-color: #16a34a;
-    background: #f0fdf4;
-}
-</style>
