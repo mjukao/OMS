@@ -11,16 +11,19 @@ const name = ref('')
 const email = ref('')
 const password = ref('')
 const error = ref('')
-
 async function handleSubmit() {
   error.value = ''
+
+  const fullEmail = `${email.value}@gmail.com`
+
   try {
     if (isRegister.value) {
-      await authStore.register(name.value, email.value, password.value)
+      await authStore.register(name.value, fullEmail, password.value)
     } else {
-      await authStore.login(email.value, password.value)
+      await authStore.login(fullEmail, password.value)
     }
-    router.push('/products')
+
+    router.push('/shops')
   } catch (e: any) {
     error.value = e.response?.data?.message || 'เกิดข้อผิดพลาด'
   }
@@ -46,12 +49,15 @@ function loginGoogle() {
 
         <div class="form-group">
           <label>Email</label>
-          <input v-model="email" type="email" placeholder="email@example.com" autocomplete="email" required />
+          <div class="input-group">
+            <input v-model="email" type="text" placeholder="username" autocomplete="email" required />
+            <span class="input-suffix">@gmail.com</span>
+          </div>
         </div>
 
         <div class="form-group">
           <label>Password</label>
-          <input v-model="password" type="password" placeholder="••••••••" autocomplete="current-password" required
+          <input v-model="password" type="password" placeholder="" autocomplete="current-password" required
             minlength="6" />
         </div>
 

@@ -536,6 +536,35 @@ body {
   cursor: pointer;
   font-weight: 600;
 }
+.input-group {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.input-group input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px 12px;
+  border-radius: 0;
+}
+
+.input-group:focus-within {
+  border-color: #6366f1;
+}
+
+.input-suffix {
+  background: #f3f4f6;
+  color: #6b7280;
+  padding: 7px 10px;
+  font-size: 13px;
+  white-space: nowrap;
+  border-left: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+}
 
 /* ============================================================
    UTILITIES — badges, alerts, stock, text helpers
@@ -603,3 +632,322 @@ body {
   font-size: 12px;
   margin-left: 4px;
 }
+
+/* ============================================================
+   SHOP VIEW — ShopView.vue
+   ============================================================ */
+.shops-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e1b4b;
+}
+
+.btn-create-shop {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-create-shop:hover { background: #4338ca; }
+
+.shop-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.shop-card {
+  position: relative;
+  width: 160px;
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  user-select: none;
+}
+.shop-card:hover          { border-color: #a5b4fc; box-shadow: 0 2px 8px rgba(79,70,229,0.1); }
+.shop-card--active        { border-color: #4f46e5; box-shadow: 0 2px 12px rgba(79,70,229,0.2); }
+.shop-card--add           { border: 2px dashed #c7d2fe; background: #f5f3ff; color: #6366f1; }
+.shop-card--add:hover     { border-color: #6366f1; }
+
+.shop-card__icon  { font-size: 36px; }
+.shop-card__plus  { font-size: 36px; color: #818cf8; line-height: 1; }
+
+.shop-card__name {
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  color: #1f2937;
+}
+.shop-card--add .shop-card__name { color: #6366f1; }
+
+.shop-card__desc {
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 130px;
+}
+
+.shop-card__delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.shop-card__delete:hover { background: #fee2e2; color: #ef4444; }
+
+.shop-card__check {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: #16a34a;
+  color: #fff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.manage-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid #e5e7eb;
+}
+
+.manage-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e1b4b;
+}
+.btn-orders {
+  background: #1311b2;
+  
+}
+/* ============================================================
+   SHOP PRODUCTS VIEW — ShopProductsView.vue
+   ============================================================ */
+.shop-products-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.shop-products-desc {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.btn-back {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.btn-back:hover { background: #e5e7eb; }
+
+.btn-orders {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.btn-orders:hover { background: #dbeafe; }
+
+/* ============================================================
+   CREATE ORDER — ShopCreateOrderView.vue
+   ============================================================ */
+.steps-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.step-dot--active { background: #4f46e5; color: #fff; }
+.step-line { width: 24px; height: 2px; background: #e5e7eb; }
+
+.sender-info { background: #f9fafb; border-radius: 6px; padding: 12px; }
+.sender-row  { display: flex; gap: 8px; font-size: 13px; margin-bottom: 4px; }
+.sender-row:last-child { margin-bottom: 0; }
+.sender-label { color: #6b7280; min-width: 48px; }
+
+.product-select-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+.product-select-card {
+  position: relative;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  background: #fff;
+}
+.product-select-card:hover         { border-color: #a5b4fc; }
+.product-select-card--selected     { border-color: #4f46e5; background: #f5f3ff; }
+.product-select-name  { font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 4px; }
+.product-select-price { font-size: 13px; color: #4f46e5; font-weight: 600; }
+.product-select-stock { font-size: 11px; margin-top: 4px; }
+.product-select-check {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: #4f46e5;
+  color: #fff;
+  border-radius: 50%;
+  width: 18px; height: 18px;
+  font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.qty-control button {
+  width: 24px; height: 24px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #f9fafb;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.qty-control button:hover { background: #e5e7eb; }
+.qty-control span { min-width: 20px; text-align: center; font-size: 13px; }
+
+.order-total {
+  text-align: right;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #374151;
+}
+.order-total strong { color: #4f46e5; font-size: 16px; }
+
+.payment-options { display: flex; gap: 16px; margin-top: 8px; }
+.payment-option {
+  flex: 1;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.payment-option:hover           { border-color: #a5b4fc; }
+.payment-option--selected       { border-color: #4f46e5; background: #f5f3ff; }
+.payment-icon  { font-size: 28px; }
+.payment-label { font-size: 13px; font-weight: 600; color: #374151; }
+
+.summary-section { margin-bottom: 4px; }
+.summary-label   { font-size: 12px; color: #6b7280; font-weight: 600; margin-bottom: 6px; }
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 4px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 14px;
+}
+.summary-total strong { color: #4f46e5; font-size: 16px; }
+
+/* ============================================================
+   BILL MODAL — ShopOrdersView.vue
+   ============================================================ */
+.bill-modal { max-width: 480px; width: 100%; }
+.bill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.bill-title { font-size: 16px; font-weight: 700; color: #1e1b4b; }
+.bill-id    { font-size: 13px; color: #6b7280; margin-top: 2px; }
+.bill-divider { border: none; border-top: 1px dashed #e5e7eb; margin: 12px 0; }
+.bill-section { margin-bottom: 4px; }
+.bill-section-title { font-size: 12px; font-weight: 700; color: #6366f1; margin-bottom: 8px; }
+.bill-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 3px 0;
+}
+.bill-label  { color: #6b7280; min-width: 80px; }
+.bill-item-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 4px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+.bill-item-qty { color: #9ca3af; margin: 0 8px; }
+.bill-total-row { padding-top: 6px; font-size: 14px; }
+
+/* badge สำหรับ order status */
+.badge-pending   { background: #fef9c3; color: #854d0e; }
+.badge-confirmed { background: #dbeafe; color: #1e40af; }
+.badge-shipped   { background: #e0e7ff; color: #3730a3; }
+.badge-delivered { background: #dcfce7; color: #166534; }
+.badge-cancelled { background: #fee2e2; color: #991b1b; }
