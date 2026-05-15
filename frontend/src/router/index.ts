@@ -10,10 +10,22 @@ import CustomersView from '../views/CustumersView.vue'
 import ShopProductsView from '../views/ShopProductsView.vue'
 import ShopOrdersView from '../views/ShopOrdersView.vue'
 import ShopCreateOrderView from '../views/ShopCreateOrderView.vue'
+import DashboardView from '../views/DashboardView.vue'
+
+function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    return Date.now() >= payload.exp * 1000
+  } catch {
+    return true
+  }
+}
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/shops' },
+    { path: '/', redirect: '/dashboard' },
+    { path: '/dashboard', component: DashboardView, meta: { requiresAuth: true } },
     { path: '/login', component: LoginView },
     { path: '/auth/callback', component: AuthCallbackView },
     { path: '/products', component: ProductsView, meta: { requiresAuth: true } },
@@ -30,8 +42,12 @@ const router = createRouter({
 router.beforeEach(async (to, _from) => {
   const authStore = useAuthStore()
 
-  if (authStore.token && !authStore.user) {
-    await authStore.fetchMe()
+  if (authStore.token) {
+    if (isTokenExpired(authStore.token)) {
+      await authStore.refreshAndRestore()
+    } else if (!authStore.user) {
+      await authStore.fetchMe()
+    }
   }
 
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {

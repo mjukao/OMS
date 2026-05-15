@@ -1,8 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import axios from 'axios'
 import { login as apiLogin, register as apiRegister, getMe } from '../api/auth.api'
 import { useShopStore } from './shop.store'
 import { useOrderStore } from './order.store'
+
+const API_BASE = 'http://localhost:3000/api'
 
 export const useAuthStore = defineStore('auth', () => {
 
@@ -39,6 +42,20 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function refreshAndRestore(): Promise<void> {
+    const stored = localStorage.getItem('refresh_token')
+    if (!stored) { logout(); return }
+    try {
+      const { data } = await axios.post(`${API_BASE}/auth/refresh`, { refresh_token: stored })
+      token.value = data.access_token
+      localStorage.setItem('token', data.access_token)
+      const me = await getMe()
+      user.value = me.data
+    } catch {
+      logout()
+    }
+  }
+
   // รับ token จาก Google OAuth callback URL
   function setToken(accessToken: string, refreshToken?: string) {
     token.value = accessToken
@@ -66,5 +83,5 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { user, token, isLoggedIn, login, register, fetchMe, setToken, logout }
+  return { user, token, isLoggedIn, login, register, fetchMe, refreshAndRestore, setToken, logout }
 })
