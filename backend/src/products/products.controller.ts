@@ -27,18 +27,18 @@ export class ProductsController {
     return this.productsService.findAll(search);
   }
 
-  @Get('shop/:shopId')//shop/:shopId คือURL ที่ต้องดึงมาเพราะมีคำสั่งขอget
+  @Get('shop/:shopId')
   findByShop(@Param('shopId') shopId: string) {//@Param ใช้เพื่อดึง URL และส่งค่าไปให้ตัวแปร shopId
     return this.productsService.findByShop(shopId);
-  }//จะถูกส่งไปที่ ProductsService ผ่านฟังก์ชัน findByShop().ใช้shopIDเพื่อตรวจสอบว่าเป็นสินค้าของร้านไหน
+  }
 
-  @Get(':id')//
+  @Get(':id')
   findOne(@Param('id') id: string) {//@Param ใช้เพื่อดึง URL และส่งค่าไปให้ตัวแปร id
     return this.productsService.findOne(id);
   }
-   //PATCH มักจะใช้เมื่อคุณต้องการอัปเดตบางฟิลด์ของ resource แทนที่จะอัปเดตทุกฟิลด์.
+   
   @Patch(':id')//@patch ใช้สำหรับรับคำขอ PATCH ที่มาที่ 
-  update(@Param('id') id: string, @Body() dto: UpdateProductDto) {//@Body ใช้สำหรับรับข้อมูลที่ส่งมา
+  update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
     return this.productsService.update(id, dto);
   }
 
