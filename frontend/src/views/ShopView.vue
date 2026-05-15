@@ -81,7 +81,11 @@ async function handleShopDelete(id: string, e: Event) {
         <div class="card-icon"></div>
         <div class="card-name">{{ shop.name }}</div>
         <div class="card-desc">{{ shop.description || shop.address || '-' }}</div>
-        <button class="card-edit-btn" @click="openEditShop(shop, $event)">แก้ไข</button>
+        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;justify-content:center">
+          <button class="card-edit-btn" style="margin:0" @click="openEditShop(shop, $event)">แก้ไข</button>
+          <button class="card-edit-btn" style="margin:0" @click.stop="router.push(`/shops/${shop._id}/dashboard`)">ภาพรวม</button>
+          <button class="card-edit-btn" style="margin:0" @click.stop="router.push(`/customers?shop=${shop._id}`)">ลูกค้า</button>
+        </div>
       </div>
 
       <div class="shop-card card-add" @click="openCreateShop">

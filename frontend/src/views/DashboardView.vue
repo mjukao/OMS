@@ -1,24 +1,30 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { getOrders } from '../api/order.api'
-import { useShopStore } from '../stores/shop.store'
+import { getShop } from '../api/shop.api'
 import type { Order } from '../types/order.type'
 
 type Range = 'today' | '7d' | '30d'
 
-const shopStore = useShopStore()
+const route = useRoute()
+const router = useRouter()
+const shopId = route.params.id as string
+
+const shopName = ref('')
 const allOrders = ref<Order[]>([])
 const loading = ref(false)
 const range = ref<Range>('7d')
-const selectedShopId = ref('')
 
 onMounted(async () => {
   loading.value = true
   try {
-    await shopStore.fetchAll()
-    selectedShopId.value = shopStore.shops[0]?._id ?? ''
-    const res = await getOrders()
-    allOrders.value = res.data
+    const [shopRes, ordersRes] = await Promise.all([
+      getShop(shopId),
+      getOrders({ shopId }),
+    ])
+    shopName.value = shopRes.data.name
+    allOrders.value = ordersRes.data
   } finally {
     loading.value = false
   }
@@ -50,14 +56,8 @@ function inWindow(o: Order, [from, to]: [Date, Date]) {
   return d >= from && d <= to
 }
 
-function matchShop(o: Order) {
-  if (!selectedShopId.value) return true
-  const id = typeof o.shop === 'object' ? o.shop._id : o.shop
-  return id === selectedShopId.value
-}
-
-const filtered = computed(() => allOrders.value.filter(o => matchShop(o) && inWindow(o, rangeWindow.value)))
-const prevFiltered = computed(() => allOrders.value.filter(o => matchShop(o) && inWindow(o, prevWindow.value)))
+const filtered = computed(() => allOrders.value.filter(o => inWindow(o, rangeWindow.value)))
+const prevFiltered = computed(() => allOrders.value.filter(o => inWindow(o, prevWindow.value)))
 const delivered = computed(() => filtered.value.filter(o => o.status === 'delivered'))
 const prevDelivered = computed(() => prevFiltered.value.filter(o => o.status === 'delivered'))
 
@@ -142,10 +142,6 @@ const recentOrders = computed(() =>
     .slice(0, 5)
 )
 
-function shopName(o: Order) {
-  return typeof o.shop === 'object' ? o.shop.name : o.shop
-}
-
 function fmt(iso: string) {
   const d = new Date(iso)
   return d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short' }) + ' ' +
@@ -161,12 +157,12 @@ function pctStr(v: number) {
   <div class="page">
     <!-- Header -->
     <div class="section-header">
-      <div style="display:flex;align-items:center;gap:12px">
-        <h1 class="page-title">ภาพรวม</h1>
-        <select v-model="selectedShopId"
-          style="padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;background:#fff">
-          <option v-for="s in shopStore.shops" :key="s._id" :value="s._id">{{ s.name }}</option>
-        </select>
+      <div class="back-header">
+        <button class="btn-back" @click="router.push('/shops')">← กลับ</button>
+        <div>
+          <h1 class="page-title">ภาพรวม</h1>
+          <div class="page-sub">{{ shopName }}</div>
+        </div>
       </div>
       <div style="display:flex;gap:6px">
         <button

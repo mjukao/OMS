@@ -24,8 +24,8 @@ function isTokenExpired(token: string): boolean {
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/dashboard' },
-    { path: '/dashboard', component: DashboardView, meta: { requiresAuth: true } },
+    { path: '/', redirect: '/shops' },
+    { path: '/shops/:id/dashboard', component: DashboardView, meta: { requiresAuth: true } },
     { path: '/login', component: LoginView },
     { path: '/auth/callback', component: AuthCallbackView },
     { path: '/products', component: ProductsView, meta: { requiresAuth: true } },

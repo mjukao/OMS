@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useShopStore } from '../stores/shop.store'
 import { getCustomers } from '../api/shop.api'
 
+const route = useRoute()
+const router = useRouter()
 const shopStore = useShopStore()
 
 const selectedShopId = ref('')
@@ -12,6 +15,7 @@ const customers = ref<any[]>([])
 
 onMounted(async () => {
   await shopStore.fetchAll()
+  if (route.query.shop) selectedShopId.value = route.query.shop as string
   await load()
 })
 
@@ -71,11 +75,17 @@ function formatDate(iso: string) {
 
 <template>
   <div class="page">
-
     <!-- Header -->
     <div class="section-header">
-      <h1 class="page-title">ลูกค้า / ผู้รับสินค้า</h1>
-      <select v-model="selectedShopId" @change="load" class="filter-bar" style="padding:7px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;background:#fff">
+      <div class="back-header">
+        <button class="btn-back" @click="router.push('/shops')">← กลับ</button>
+        <div>
+          <h1 class="page-title">ลูกค้า / ผู้รับสินค้า</h1>
+          <div class="page-sub">ภาพรวมของลูกค้า</div>
+        </div>
+      </div>
+      <select v-model="selectedShopId" @change="load" class="filter-bar"
+        style="padding:7px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;background:#fff">
         <option value="">ทุกร้าน</option>
         <option v-for="shop in shopStore.shops" :key="shop._id" :value="shop._id">
           {{ shop.name }}
@@ -117,9 +127,10 @@ function formatDate(iso: string) {
         </thead>
         <tbody>
           <template v-for="c in customers" :key="rowKey(c)">
-            <tr :class="{ 'row-active': expandedKey === rowKey(c) }" style="cursor:pointer"
-              @click="toggle(rowKey(c))">
-              <td><div style="font-weight:500">{{ c.receiver.name || '-' }}</div></td>
+            <tr :class="{ 'row-active': expandedKey === rowKey(c) }" style="cursor:pointer" @click="toggle(rowKey(c))">
+              <td>
+                <div style="font-weight:500">{{ c.receiver.name || '-' }}</div>
+              </td>
               <td>{{ c.receiver.phone || '-' }}</td>
               <td style="font-size:12px;color:#6b7280;max-width:180px">{{ c.receiver.address || '-' }}</td>
               <td>{{ c.orderCount }} ครั้ง</td>
